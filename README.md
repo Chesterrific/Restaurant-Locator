@@ -1,2 +1,5 @@
 # Restaurant-Locator
-Web app that uses Google Maps API to list all restaurants within a given criteria and range, and choose one randomly.
+Locates restaurants around a given position
+Uses Google Maps and Places APIs to search for and return restaurants based on user criteria on distance, price, and genre of food.
+
+[Link to website](https://chesterrific.github.io/Restaurant-Locator/)
