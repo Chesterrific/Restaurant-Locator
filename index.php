@@ -19,13 +19,13 @@
   <script src="js/main.js"></script>
   <?php
   include 'connect.php';
-  $key = pg_fetch_array($result, 0, PGSQL_ASSOC);
   echo '<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=' . $key['value'] . '&callback=init"></script>';
-    
-    // Freeing Memory and Closing connection
-    pg_free_result($result);
-    pg_close($dbconn);
+    src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&callback=init"></script>';
+
+  // Freeing Memory and Closing connection
+  unset($key);
+  pg_free_result($result);
+  pg_close($dbconn);
   ?>
 
 </body>
