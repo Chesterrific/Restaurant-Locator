@@ -22,7 +22,7 @@
   // echo '<script async defer
   //   src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&callback=init"></script>';
 
-  include 'test.php';
+  include 'dbconn.php';
 
   // Freeing Memory and Closing connection
   unset($key);
