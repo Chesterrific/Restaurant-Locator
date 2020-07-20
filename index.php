@@ -18,11 +18,9 @@
 
   <script src="js/main.js"></script>
   <?php
-  include 'connect.php';
+  include 'dbconn.php';
   echo '<script async defer
     src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&callback=init"></script>';
-
-  include 'dbconn.php';
 
   // Freeing Memory and Closing connection
   unset($key);
