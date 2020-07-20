@@ -13,21 +13,25 @@
     <div id="map"></div>
   </section>
 
-  <input id="address" type="text">
-  <button id="locate" onclick="findCurrentLoc()">Start</button>
+  <section id="search">
+    <button class="locateBtn" onclick="FindCurrentLoc()">Use Current Location</button>
+    <div id="searchTab">
+      <input id="address" type="text">
+      <button class="locateBtn" onclick="SearchLoc()">Search</button>
+    </div>
+  </section>
 
   <script src="js/main.js"></script>
   <?php
-  include 'dbconn.php';
+  include 'connect.php';
   echo '<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&callback=init"></script>';
+    src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&callback=Init"></script>';
 
   // Freeing Memory and Closing connection
   unset($key);
   pg_free_result($result);
   pg_close($dbconn);
   ?>
-
 </body>
 
 </html>
