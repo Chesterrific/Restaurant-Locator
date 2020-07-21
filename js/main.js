@@ -52,3 +52,7 @@ function SetInfoWindowInfo(pos, content) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(content);
 }
+
+function CloseOverlay(){
+ document.getElementById('overlay').style.height = "0%"
+}
