@@ -4,6 +4,7 @@ html, body {
   font-size: 1.4em;
   height: 100%;
   margin: 0;
+  overflow-x: hidden;
   padding: 0;
 }
 
@@ -22,6 +23,7 @@ html, body {
   height: 100%;
 }
 
+/* ---------------------Overlay Styling--------------------- */
 #overlay {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.9);
@@ -62,3 +64,28 @@ html, body {
   margin-top: 50px;
 }
 
+/* ---------------------Results Styling--------------------- */
+#results{
+  color: #212529;
+  text-align: center;
+  width: 20vw;
+}
+
+#title{
+  font-size: 1.1em;
+}
+
+#criteria{
+  list-style: none;
+}
+
+#criteria input, select, label{
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.option{
+  display: flex;
+  font-size: .5em;
+  margin-bottom: 10px;
+}
