@@ -1,7 +1,7 @@
-function CloseOverlay() {
+function closeOverlay() {
   document.getElementById('overlay').style.height = "0%"
 }
 
-function OpenOverlay() {
+function openOverlay() {
   document.getElementById('overlay').style.height = "100%"
 }
