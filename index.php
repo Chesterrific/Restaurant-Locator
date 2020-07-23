@@ -53,7 +53,7 @@
   <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=init"></script> -->
 
   <?php
-  include 'connect.php';
+  include 'dbconn.php';
   echo '<script async defer
     src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
 
