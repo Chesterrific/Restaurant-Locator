@@ -28,6 +28,11 @@
   </section>
 
   <section id="results">
+    <h2 id="title">Results</h2>
+    <button id="closeResultsBtn" onclick="closeResults()"> close </button>
+  </section>
+
+  <section id="search">
     <h2 id="title">Search Criteria</h2>
     <ul id="criteria">
       <li class="option">Food Type: <input type="text" id="foodType" value="Burgers"></li>
@@ -45,23 +50,24 @@
     <button id="moreBtn">More Results</button>
     <button id="openOverlayBtn" onclick="openOverlay()">New Starting Position</button>
     <button id="clearMarkers" onclick="deleteMarkers()">Clear Markers</button>
+    <button id="openResults" onclick="openResults()">Open Results</button>
   </section>
 
   <script src="js/main.js"></script>
   <script src="js/style.js"></script>
 
-  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=init"></script> -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=init"></script>
 
   <?php
-  include 'dbconn.php';
-  echo '<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
+  // include 'connect.php';
+  // echo '<script async defer
+  //   src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
 
-  //Freeing Memory and Closing connection
-  unset($key);
-  pg_free_result($result);
-  pg_close($dbconn);
-  
+  // //Freeing Memory and Closing connection
+  // unset($key);
+  // pg_free_result($result);
+  // pg_close($dbconn);
+
   ?>
 </body>
 
