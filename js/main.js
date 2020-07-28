@@ -2,13 +2,13 @@
 var map, geocoder, infoWindow, placesService;
 
 //Location Components
-var lat, long, startingCoords, range;
+var lat, long, startingCoords, range, bounds;
 
 //Pagination Components
 var getNextPage, moreBtn;
 
 //Marker Components
-var homeIcon, markersList;
+var homeIcon, markersList, homeMarker;
 
 function init() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -18,6 +18,7 @@ function init() {
   geocoder = new google.maps.Geocoder();
   infoWindow = new google.maps.InfoWindow;
   placesService = new google.maps.places.PlacesService(map);
+  bounds = new google.maps.LatLngBounds();
 
   getNextPage = null;
   moreBtn = document.getElementById('moreBtn');
@@ -31,29 +32,40 @@ function init() {
 
   homeIcon = {
     url: 'http://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png',
-    scaledSize: new google.maps.Size(25,25)
+    scaledSize: new google.maps.Size(25, 25),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(12.5, 12.5)
   }
   markersList = [];
+  homeMarker = new google.maps.Marker();
 }
 
 function searchLoc() {
   startingCoords = null;
+  deleteHomeMarker();
   var startLocation = document.getElementById('address').value;
   geocoder.geocode({ 'address': startLocation }, function (results, status) {
     if (status == 'OK') {
-      map.setCenter(results[0].geometry.location);
+      startingCoords = results[0].geometry.location;
 
       const marker = new google.maps.Marker({
         map: map,
-        position: results[0].geometry.location,
+        position: startingCoords,
         icon: homeIcon
       });
 
-      markersList.push(marker);
-
-      setInfoWindowInfo(results[0].geometry.location, results[0].formatted_address);
-      startingCoords = results[0].geometry.location;
+      homeMarker = marker;
+      setInfoWindowInfo(startingCoords, results[0].formatted_address);
       infoWindow.open(map);
+
+      google.maps.event.addListener(homeMarker, 'click', () => {
+        setInfoWindowInfo(startingCoords, results[0].formatted_address);
+        map.panTo(homeMarker.getPostion());
+        infoWindow.open(map);
+      });
+
+      map.setZoom(10);
+      map.setCenter(startingCoords);
       closeOverlay();
     } else {
       alert('Geocode was not successful: ' + status);
@@ -63,6 +75,7 @@ function searchLoc() {
 
 function findCurrentLoc() {
   startingCoords = null;
+  deleteHomeMarker();
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
       var pos = {
@@ -76,13 +89,22 @@ function findCurrentLoc() {
             position: pos,
             icon: homeIcon
           });
+          map.setCenter(pos);
+          map.setZoom(10);
 
+          homeMarker = marker;
           setInfoWindowInfo(pos, results[0].formatted_address);
-          startingCoords = pos;
           infoWindow.open(map);
+
+          google.maps.event.addListener(homeMarker, "click", () => {
+            setInfoWindowInfo(pos, results[0].formatted_address);
+            map.panTo(homeMarker.getPosition());
+            infoWindow.open(map);
+          });
+
+          startingCoords = pos;
         }
       });
-      map.setCenter(pos);
       closeOverlay();
     });
   } else {
@@ -96,6 +118,7 @@ function setInfoWindowInfo(pos, content) {
 }
 
 function searchRestaurants() {
+  infoWindow.open(null);
   var open = document.getElementsByName('open?');
   var open_value;
   for (var i = 0; i < open.length; i++) {
@@ -108,11 +131,12 @@ function searchRestaurants() {
     location: startingCoords,
     keyword: document.getElementById("foodType").value,
     maxPriceLevel: document.getElementById("prices").value,
-    radius: document.getElementById("radius").value / 0.000621371,
+    radius: document.getElementById("radius").value / 0.000621371, //Converting from meters to miles.
     type: ['restaurant']
   };
 
   placesService.nearbySearch(request, getSearchResults);
+  
 }
 
 function getSearchResults(results, status, pagination) {
@@ -127,37 +151,47 @@ function getSearchResults(results, status, pagination) {
       getNextPage = pagination;
     }
   }
+
+  showMarkers();
 }
 
 function createMarker(place) {
   const marker = new google.maps.Marker({
-    map,
+    map: map,
     position: place.geometry.location
   });
 
-  markersList.push(marker);
   google.maps.event.addListener(marker, "click", () => {
     setInfoWindowInfo(place.geometry.location, place.name);
+    map.panTo(marker.getPosition());
     infoWindow.open(map);
   });
+  bounds.extend(marker.getPosition());
+  markersList.push(marker);
 }
 
-function setMapOnAll(map){
-  for(var i = 0; i < markersList.length; i++){
+function setMapOnAll(map) {
+  for (var i = 0; i < markersList.length; i++) {
     markersList[i].setMap(map);
   }
 }
 
-function clearMarkers(){
+function clearMarkers() {
   setMapOnAll(null);
 }
 
-function showMarkers(){
+function showMarkers() {
   setMapOnAll(map);
+  map.fitBounds(bounds);
 }
 
-function deleteMarkers(){
+function deleteMarkers() {
   clearMarkers();
   markersList = [];
   infoWindow.open(null);
+}
+
+function deleteHomeMarker() {
+  homeMarker.setMap(null);
+  homeMarker = null;
 }
