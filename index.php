@@ -56,18 +56,17 @@
   <script src="js/main.js"></script>
   <script src="js/style.js"></script>
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=init"></script>
+  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=init"></script> -->
 
   <?php
-  // include 'connect.php';
-  // echo '<script async defer
-  //   src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
+  include 'dbconn.php';
+  echo '<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
 
-  // //Freeing Memory and Closing connection
-  // unset($key);
-  // pg_free_result($result);
-  // pg_close($dbconn);
-
+  //Freeing Memory and Closing connection
+  unset($key);
+  pg_free_result($result);
+  pg_close($dbconn);
   ?>
 </body>
 
