@@ -18,18 +18,13 @@
   <section id="overlay">
     <div id="overlayContent">
       <h1 class="centered">Random Restaurant Locator</h1>
-      <button class="locateBtn" onclick="findCurrentLoc()">Use Current Location</button>
+      <button class="locateBtn" id="findCurrLocBtn">Use Current Location</button>
       <div id="searchTab">
         <input id="address" type="text">
-        <button class="locateBtn" onclick="searchLoc()">Search</button>
+        <button class="locateBtn" id="searchLocBtn">Search</button>
       </div>
       <a class="centered" id="closeOverlayBtn" onclick="closeOverlay()">^</a>
     </div>
-  </section>
-
-  <section id="results">
-    <h2 id="title">Results</h2>
-    <button id="closeResultsBtn" onclick="closeResults()"> close </button>
   </section>
 
   <section id="search">
@@ -53,6 +48,11 @@
     <button id="openResults" onclick="openResults()">Open Results</button>
   </section>
 
+  <section id="results">
+    <h2 id="title">Results</h2>
+    <button id="closeResultsBtn" onclick="closeResults()"> close </button>
+  </section>
+
   <script src="js/main.js"></script>
   <script src="js/style.js"></script>
 
@@ -61,8 +61,8 @@
   <?php
   include 'dbconn.php';
   echo '<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
-
+  src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
+  
   //Freeing Memory and Closing connection
   unset($key);
   pg_free_result($result);

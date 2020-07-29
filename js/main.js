@@ -2,7 +2,7 @@
 var map, geocoder, infoWindow, placesService;
 
 //Location Components
-var lat, long, startingCoords, range, bounds;
+var lat, long, startingCoords, range, bounds, findCurrLocBtn, searchLocBtn;
 
 //Pagination Components
 var getNextPage, moreBtn;
@@ -11,6 +11,7 @@ var getNextPage, moreBtn;
 var homeIcon, markersList, homeMarker;
 
 function init() {
+  // Initialize Google components.
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 39.8097343, lng: -98.5556199 },
     zoom: 5
@@ -20,6 +21,7 @@ function init() {
   placesService = new google.maps.places.PlacesService(map);
   bounds = new google.maps.LatLngBounds();
 
+  // Initialize Results components.
   getNextPage = null;
   moreBtn = document.getElementById('moreBtn');
   moreBtn.onclick = function () {
@@ -30,6 +32,7 @@ function init() {
     }
   }
 
+  // Initialize Marker components.
   homeIcon = {
     url: 'http://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png',
     scaledSize: new google.maps.Size(25, 25),
@@ -38,78 +41,61 @@ function init() {
   }
   markersList = [];
   homeMarker = new google.maps.Marker();
-}
 
-function searchLoc() {
-  startingCoords = null;
-  deleteHomeMarker();
-  var startLocation = document.getElementById('address').value;
-  geocoder.geocode({ 'address': startLocation }, function (results, status) {
-    if (status == 'OK') {
-      startingCoords = results[0].geometry.location;
+  // Add event listeners to buttons.
+  findCurrLocBtn = document.getElementById('findCurrLocBtn').addEventListener('click', function () {
+    findStartLoc()
+      .then(setHomeMarker)
+      .catch(err => alert('Geolocation was not successful: ' + err));
+  });
 
-      const marker = new google.maps.Marker({
-        map: map,
-        position: startingCoords,
-        icon: homeIcon
-      });
-
-      homeMarker = marker;
-      setInfoWindowInfo(startingCoords, results[0].formatted_address);
-      infoWindow.open(map);
-
-      google.maps.event.addListener(homeMarker, 'click', () => {
-        setInfoWindowInfo(startingCoords, results[0].formatted_address);
-        map.panTo(homeMarker.getPostion());
-        infoWindow.open(map);
-      });
-
-      map.setZoom(10);
-      map.setCenter(startingCoords);
-      closeOverlay();
-    } else {
-      alert('Geocode was not successful: ' + status);
-    }
+  searchLocBtn = document.getElementById('searchLocBtn').addEventListener('click', function () {
+    findStartLoc(document.getElementById('address').value)
+      .then(setHomeMarker)
+      .catch(err => alert('Geocoding was not successful: ' + err));
   });
 }
 
-function findCurrentLoc() {
+function findStartLoc(givenAddress = null) {
   startingCoords = null;
+  let formattedAddress = null;
   deleteHomeMarker();
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      geocoder.geocode({ 'location': pos }, function (results, status) {
+  deleteMarkers();
+
+  return new Promise((resolve, reject) => {
+    if (!givenAddress) { //If not given address, geolocate current position.
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          geocoder.geocode({ 'location': pos }, function (results, status) {
+            if (status == 'OK') {
+              startingCoords = pos;
+              formattedAddress = results[0].formatted_address;
+              resolve(formattedAddress);
+            } else {
+              reject(status);
+            }
+          });
+        });
+      } else {
+        alert('Geolocation was not successful.');
+        reject(status);
+      }
+    } else { //Use given address to geocode current position.
+      geocoder.geocode({ 'address': givenAddress }, function (results, status) {
         if (status == 'OK') {
-          const marker = new google.maps.Marker({
-            map: map,
-            position: pos,
-            icon: homeIcon
-          });
-          map.setCenter(pos);
-          map.setZoom(10);
-
-          homeMarker = marker;
-          setInfoWindowInfo(pos, results[0].formatted_address);
-          infoWindow.open(map);
-
-          google.maps.event.addListener(homeMarker, "click", () => {
-            setInfoWindowInfo(pos, results[0].formatted_address);
-            map.panTo(homeMarker.getPosition());
-            infoWindow.open(map);
-          });
-
-          startingCoords = pos;
+          startingCoords = results[0].geometry.location;
+          formattedAddress = results[0].formatted_address;
+          resolve(formattedAddress);
+        } else {
+          reject(status);
         }
       });
-      closeOverlay();
-    });
-  } else {
-    alert('Geolocation was not successful');
-  }
+    }
+  });
 }
 
 function setInfoWindowInfo(pos, content) {
@@ -118,14 +104,7 @@ function setInfoWindowInfo(pos, content) {
 }
 
 function searchRestaurants() {
-  infoWindow.open(null);
-  var open = document.getElementsByName('open?');
-  var open_value;
-  for (var i = 0; i < open.length; i++) {
-    if (open[i].checked) {
-      open_value = open[i].value;
-    }
-  }
+  deleteMarkers();
 
   var request = {
     location: startingCoords,
@@ -136,7 +115,6 @@ function searchRestaurants() {
   };
 
   placesService.nearbySearch(request, getSearchResults);
-  
 }
 
 function getSearchResults(results, status, pagination) {
@@ -151,13 +129,40 @@ function getSearchResults(results, status, pagination) {
       getNextPage = pagination;
     }
   }
-
   showMarkers();
 }
+// Home Marker functions
+function setHomeMarker(formattedAddress) {
+  if (formattedAddress) {
+    const marker = new google.maps.Marker({
+      map: map,
+      position: startingCoords,
+      icon: homeIcon
+    });
 
+    homeMarker = marker;
+    setInfoWindowInfo(startingCoords, formattedAddress);
+    infoWindow.open(map);
+
+    google.maps.event.addListener(homeMarker, 'click', () => {
+      setInfoWindowInfo(startingCoords, formattedAddress);
+      infoWindow.open(map);
+    });
+
+    map.setCenter(startingCoords);
+    map.setZoom(10);
+    closeOverlay();
+  }
+}
+
+function deleteHomeMarker() {
+  homeMarker.setMap(null);
+  homeMarker = new google.maps.Marker();
+}
+
+// General Marker functions
 function createMarker(place) {
   const marker = new google.maps.Marker({
-    map: map,
     position: place.geometry.location
   });
 
@@ -189,9 +194,4 @@ function deleteMarkers() {
   clearMarkers();
   markersList = [];
   infoWindow.open(null);
-}
-
-function deleteHomeMarker() {
-  homeMarker.setMap(null);
-  homeMarker = null;
 }
