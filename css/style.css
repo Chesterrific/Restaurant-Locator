@@ -1,11 +1,15 @@
 html, body {
-  display: flex;
   font-family: 'Roboto', sans-serif;
   font-size: 1.4em;
   height: 100%;
   margin: 0;
   overflow-x: hidden;
   padding: 0;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 8fr 2fr;
 }
 
 .centered {
@@ -16,7 +20,7 @@ html, body {
 
 #mapHolder {
   height: 100vh;
-  width: 80vw;
+  width: 100%;
 }
 
 #map {
@@ -24,16 +28,15 @@ html, body {
 }
 
 /* ---------------------Overlay Styling--------------------- */
+
 #overlay {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.9);
-  /* Black w/opacity */
   display: flex;
-  height: 100%;
+  height: 100vh;
   justify-content: center;
   left: 0;
   overflow: hidden;
-  /* Disable horizontal scroll */
   position: fixed;
   text-align: center;
   top: 0;
@@ -65,44 +68,53 @@ html, body {
 }
 
 /* ---------------------Search Styling--------------------- */
-#search{
+
+#search {
   color: #212529;
   text-align: center;
-  width: 20vw;
 }
 
-#title{
+#title {
   font-size: 1.1em;
 }
 
-#criteria{
-  list-style: none;
-  margin: 0px 25px 0px;
-}
-
-#criteria input, select{
-  margin-left: 10px;
-  margin-bottom: 10px;
-}
-
-.option{
-  display: flex;
+#criteria {
   font-size: .5em;
-  margin-bottom: 10px;
+  list-style: none;
+}
+
+#buttons {
+  display: grid;
+  gap: 1vh 1vw;
+  grid-template-columns: 50% 50%;
+  grid-auto-rows: minmax(auto, 150px);
+  padding: 2vh 2vw;
 }
 
 /* ---------------------Results Styling--------------------- */
-#results{
+
+#resultsMenu {
   background-color: rgba(0, 0, 0);
   color: white;
   height: 100%;
   overflow: hidden;
-  /* Disable horizontal scroll */
   position: fixed;
-  right: 0;
+  right: -20vw;
   text-align: center;
   top: 0;
   transition: 0.5s;
-  width: 0%;
+  width: 20vw;
   z-index: 1;
+}
+
+#resultsList {
+  height: 60vh;
+  list-style-type: none;
+  margin: 0;
+  overflow-y: scroll;
+  padding: 0;
+}
+
+#resultsList>li{
+  cursor: pointer;
 }

@@ -11,58 +11,66 @@
 </head>
 
 <body>
-  <section id="mapHolder">
-    <div id="map"></div>
-  </section>
+  <main>
+    <section id="mapHolder">
+      <div id="map"></div>
+    </section>
 
-  <section id="overlay">
-    <div id="overlayContent">
-      <h1 class="centered">Random Restaurant Locator</h1>
-      <button class="locateBtn" id="findCurrLocBtn">Use Current Location</button>
-      <div id="searchTab">
-        <input id="address" type="text">
-        <button class="locateBtn" id="searchLocBtn">Search</button>
+    <section id="overlay">
+      <div id="overlayContent">
+        <h1 class="centered">Random Restaurant Locator</h1>
+        <button class="locateBtn" id="findCurrLocBtn">Use Current Location</button>
+        <div id="searchTab">
+          <input id="address" type="text">
+          <button class="locateBtn" id="searchLocBtn">Search</button>
+        </div>
+        <a class="centered" id="closeOverlayBtn" onclick="closeOverlay()">^</a>
       </div>
-      <a class="centered" id="closeOverlayBtn" onclick="closeOverlay()">^</a>
-    </div>
-  </section>
+    </section>
 
-  <section id="search">
-    <h2 id="title">Search Criteria</h2>
-    <ul id="criteria">
-      <li class="option">Food Type: <input type="text" id="foodType" value="Burgers"></li>
-      <li class="option">Search Radius (Miles): <input type="text" id="radius" value="5"></li>
-      <li class="option" id="priceRange">Max Price Range:
-        <select name="prices" id="prices">
-          <option value="1">$ (Least Expensive)</option>
-          <option value="2">$$</option>
-          <option value="3">$$$</option>
-          <option value="4">$$$$ (Most Expensive)</option>
-        </select>
-      </li>
-    </ul>
-    <button onclick="searchRestaurants()">Begin Search</button>
-    <button id="moreBtn">More Results</button>
-    <button id="openOverlayBtn" onclick="openOverlay()">New Starting Position</button>
-    <button id="clearMarkers" onclick="deleteMarkers()">Clear Markers</button>
-    <button id="openResults" onclick="openResults()">Open Results</button>
-  </section>
+    <section id="search">
+      <h2 id="title">Search Criteria</h2>
+      <ul id="criteria">
+        <li class="option">Food Type: <input type="text" id="foodType" value="Burgers"></li>
+        <li class="option">Search Radius (Miles): <input type="text" id="radius" value="5"></li>
+        <li class="option" id="priceRange">Max Price Range:
+          <select name="prices" id="prices">
+            <option value="1">$ (Least Expensive)</option>
+            <option value="2">$$</option>
+            <option value="3">$$$</option>
+            <option value="4">$$$$ (Most Expensive)</option>
+          </select>
+        </li>
+      </ul>
+      <div id="buttons">
+        <button class="button" onclick="searchRestaurants()">Begin Search</button>
+        <button class="button" id="openOverlayBtn" onclick="openOverlay()">New Starting Position</button>
+        <button class="button" id="clearMarkers" onclick="deleteMarkers()">Clear Results</button>
+        <button class="button" id="openResults" onclick="openResults()">Open Results</button>
+      </div>
+    </section>
 
-  <section id="results">
-    <h2 id="title">Results</h2>
-    <button id="closeResultsBtn" onclick="closeResults()"> close </button>
-  </section>
-
+    <section id="resultsMenu">
+      <h2 id="title">Results</h2>
+      <ul id="resultsList"></ul>
+      <div id="buttons">
+        <button class="button" id="moreBtn">More Results</button>
+        <button class="button" id="closeResultsBtn" onclick="closeResults()"> close </button>
+      </div>
+    </section>
+  </main>
   <script src="js/main.js"></script>
   <script src="js/style.js"></script>
 
   <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=init"></script> -->
 
   <?php
+  // For Testing Only
+  // include 'connect.php';
   include 'dbconn.php';
   echo '<script async defer
   src="https://maps.googleapis.com/maps/api/js?key=' . $key[0] . '&libraries=places&callback=init"></script>';
-  
+
   //Freeing Memory and Closing connection
   unset($key);
   pg_free_result($result);

@@ -1,15 +1,15 @@
 function closeOverlay() {
-  document.getElementById('overlay').style.height = "0%"
+  document.getElementById('overlay').style.top = "-100vh"
 }
 
 function openOverlay() {
-  document.getElementById('overlay').style.height = "100%"
+  document.getElementById('overlay').style.top = "0";
 }
 
 function closeResults() {
-  document.getElementById('results').style.width = "0%";
+  document.getElementById('resultsMenu').style.right = "-20vw";
 }
 
 function openResults() {
-  document.getElementById('results').style.width = "20vw";
+  document.getElementById('resultsMenu').style.right = "0";
 }
