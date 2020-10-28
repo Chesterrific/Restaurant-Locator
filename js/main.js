@@ -10,6 +10,9 @@ var getNextPage, moreBtn;
 //Marker Components
 var homeIcon, markersList, homeMarker;
 
+//Results Array
+const restaurantResults = [];
+
 function init() {
   // Initialize Google components.
   map = new google.maps.Map(document.getElementById("map"), {
@@ -115,6 +118,8 @@ function searchRestaurants() {
   };
 
   placesService.nearbySearch(request, getSearchResults);
+
+  openResults();
 }
 
 function getSearchResults(results, status, pagination) {
@@ -166,6 +171,7 @@ function createMarker(place) {
     position: place.geometry.location
   });
 
+  // Create map marker
   google.maps.event.addListener(marker, "click", () => {
     setInfoWindowInfo(place.geometry.location, place.name);
     map.panTo(marker.getPosition());
@@ -173,6 +179,19 @@ function createMarker(place) {
   });
   bounds.extend(marker.getPosition());
   markersList.push(marker);
+
+  // Create result listing
+  var ul = document.getElementById('resultsList');
+  var li = document.createElement('li');
+  li.appendChild(document.createTextNode(place.name));
+  ul.appendChild(li);
+
+  // 
+  li.addEventListener('click', () => {
+    setInfoWindowInfo(place.geometry.location, place.name);
+    map.panTo(marker.getPosition());
+    infoWindow.open(map);
+  });
 }
 
 function setMapOnAll(map) {
@@ -183,6 +202,7 @@ function setMapOnAll(map) {
 
 function clearMarkers() {
   setMapOnAll(null);
+  $('#resultsList').empty();
 }
 
 function showMarkers() {
@@ -195,3 +215,7 @@ function deleteMarkers() {
   markersList = [];
   infoWindow.open(null);
 }
+
+// Results page functions
+
+
